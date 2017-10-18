@@ -199,22 +199,26 @@ startssh(){
 
 clear
 
+# Display system information in the terminal.
 printf "%s\n\n" "USERNAME: $USER"
 printf "%s\n\n" "HOSTNAME: $(hostname -f)"
 printf "%s\n\n" "DATE: $(date)"
 printf "%s\n\n" "KERNEL version: $(uname -rms)"
 printf "%s\n\n" "UPTIME: $(uptime -p)"
 printf "%s\n\n" "PACKAGES: $(dpkg --get-selections | wc -l)" 
-printf "%s\n\n" "RESOLUTION: $(xrandr | awk '/\*/{print $1}')"
+# Print the resolution of the screens. printf displays all output on one line.
+printf "%s\n\n" "RESOLUTION: $(xrandr | awk '/\*/{printf $1" "}')"
 printf "%s\n" "$(free -h | awk '/Mem/{print "MEMORY Used: "$3" Total: "$2}')" 
 printf "\n%s\n\n" "$(df -h -x tmpfs | egrep -v '^udev')"
 
 gateways(){
+    # Print the default gateway.
     GATEWAY=$(ip route | awk '/default via/{print $3}')
     printf "%s\n" "GATEWAY: ${GATEWAY:=None}"
 }
 
 dns_servers(){
+    # Print each DNS server in resolv.conf.
     NS1=$(awk '/nameserver/ {print $2}' /etc/resolv.conf | head -1)
     NS2=$(awk '/nameserver/ {print $2}' /etc/resolv.conf | tail -1)
     printf "%s\n" "NAMESERVER1: ${NS1:=Not set}"
@@ -225,9 +229,11 @@ dns_servers(){
     fi
 }
 
+# Print the enp0s25 ip address.
 ENP0S25=$(ip addr show enp0s25 | awk '/inet /{print $2}')
 printf "%s\n" "ENP0S25: ${ENP0S25:=Not Connected}"
 
+# Print the wlp3s0 ip address.
 WLP3S0=$(ip addr show wlp3s0 | awk '/inet /{print $2}')
 printf "%s\n" "WLP3S0: ${WLP3S0:=Not Connected}"
 

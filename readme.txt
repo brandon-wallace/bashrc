@@ -1,1 +1,1 @@
-# Bashrc file
+My custom .bashrc file.
