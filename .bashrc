@@ -118,7 +118,7 @@ fi
 
 
 # Set the prompt.
-PS1='${debian_chroot:+($debian_chroot)}\$ '
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\$ \[\033[00m\]'
 
 # Set the vi mode.
 set -o vi
