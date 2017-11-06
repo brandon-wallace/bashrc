@@ -230,7 +230,7 @@ printf "%s\n\n" "PACKAGES: $(dpkg --get-selections | wc -l)"
 # Print the resolution of the screens. printf displays all output on one line.
 printf "%s\n\n" "RESOLUTION: $(xrandr | awk '/\*/{printf $1" "}')"
 printf "%s\n" "$(free -h | awk '/Mem/{print "MEMORY Used: "$3" Total: "$2}')" 
-printf "\n%s\n\n" "$(df -h -x tmpfs | egrep -v '^udev')"
+#printf "\n%s\n\n" "$(df -h -x tmpfs | egrep -v '^udev')"
 
 gateways(){
     # Print the default gateway.
