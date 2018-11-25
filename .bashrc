@@ -1,24 +1,3 @@
-#------------------------------------------------------------------------------
-#==============================================================================
-###############################################################################
-#""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-#             __                        __                     
-#            /\ \                      /\ \                    
-#            \ \ \____     __      ____\ \ \___   _ __   ___   
-#             \ \ '__`\  /'__`\   /',__\\ \  _ `\/\`'__\/'___\ 
-#              \ \ \L\ \/\ \L\.\_/\__, `\\ \ \ \ \ \ \//\ \__/ 
-#               \ \_,__/\ \__/.\_\/\____/ \ \_\ \_\ \_\\ \____\
-#                \/___/  \/__/\/_/\/___/   \/_/\/_/\/_/ \/____/
-#                
-#                  
-#""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-###############################################################################
-#==============================================================================
-#------------------------------------------------------------------------------
-#                        https://github.com/iambw
-#""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
- 
-
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -137,9 +116,18 @@ fi
 # CUSTOM .BASHRC SETTINGS
 #---------------------------------------------------------------------------------------
 
+function git_branch() {
+    if [ -d .git ] ; then
+        printf "%s" "\($(git branch | awk '/\*/{print $2}')\)";
+    fi
+}
 
 # Set the prompt.
-PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\$ \[\033[00m\]'
+bash_prompt(){
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]$(git_branch) \$ \[\033[00m\]'
+}
+
+PROMPT_COMMAND=bash_prompt
 
 # Set the vi mode.
 set -o vi
@@ -158,6 +146,9 @@ c(){ clear; }
 
 # Show the command line history.
 h(){ history; }
+
+#
+mounted(){ /bin/mount | column -t; }
 
 # Go back directory level.
 ..(){ cd ..; pwd; }
@@ -229,7 +220,7 @@ printf "%s\n\n" "UPTIME: $(uptime -p)"
 printf "%s\n\n" "PACKAGES: $(dpkg --get-selections | wc -l)" 
 # Print the resolution of the screens. printf displays all output on one line.
 printf "%s\n\n" "RESOLUTION: $(xrandr | awk '/\*/{printf $1" "}')"
-printf "%s\n" "$(free -h | awk '/Mem/{print "MEMORY Used: "$3" Total: "$2}')" 
+printf "%s\n\n" "$(free -h | awk '/Mem/{print "MEMORY Used: "$3" Total: "$2}')" 
 #printf "\n%s\n\n" "$(df -h -x tmpfs | egrep -v '^udev')"
 
 gateways(){
@@ -240,8 +231,9 @@ gateways(){
 
 dns_servers(){
     # Print each DNS server in resolv.conf.
-    NS1=$(awk '/nameserver/ {print $2}' /etc/resolv.conf | head -1)
-    NS2=$(awk '/nameserver/ {print $2}' /etc/resolv.conf | tail -1)
+    NS1=$(awk '/^nameserver/ {print $2}' /etc/resolv.conf | head -1)
+    NS2=$(awk '/^nameserver/ {print $2}' /etc/resolv.conf | tail -1)
+    # NS3=$(awk '/^nameserver/ {print $2}' /etc/resolv.conf | tail -1)
     printf "%s\n" "NAMESERVER1: ${NS1:=Not set}"
     if [ "$NS1" == "$NS2" ] ; then
         printf "%s\n\n" "NAMESERVER2: Not set"
@@ -260,4 +252,10 @@ printf "%s\n" "WLP3S0: ${WLP3S0:=Not Connected}"
 
 gateways
 dns_servers
- 
+
+function nvm-start() {
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+}
+
