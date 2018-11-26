@@ -150,7 +150,7 @@ function bash_prompt(){
 
 PROMPT_COMMAND=bash_prompt
 
-# Set the vi mode.
+# Set vi mode.
 set -o vi
 
 # Set the umask.
