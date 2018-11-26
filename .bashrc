@@ -144,7 +144,11 @@ function git_branch() {
 }
 
 # Set the prompt.
+<<<<<<< HEAD
 function bash_prompt(){
+=======
+bash_prompt(){
+>>>>>>> 863b7510bfa10892dcfac3f916416f7250ec9887
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]$(git_branch)\$ \[\033[00m\]'
 }
 
