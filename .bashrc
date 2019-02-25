@@ -15,7 +15,7 @@
 ###############################################################################
 #==============================================================================
 #------------------------------------------------------------------------------
-#                        https://github.com/iambw
+#                     https://github.com/brandon-wallace
 #""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
  
@@ -145,7 +145,7 @@ function git_branch() {
 
 # Set the prompt.
 function bash_prompt(){
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]$(git_branch)\$ \[\033[00m\]'
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]$(git_branch)\w \$ \[\033[00m\]'
 }
 
 PROMPT_COMMAND=bash_prompt
@@ -167,6 +167,14 @@ c(){ clear; }
 
 # Show the command line history.
 h(){ history; }
+
+function gl(){ 
+    git log --oneline; 
+}
+
+function gst(){
+    git status --cached;
+}
 
 #
 mounted(){ /bin/mount | column -t; }
