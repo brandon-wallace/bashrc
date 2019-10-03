@@ -18,7 +18,6 @@
 #                     https://github.com/brandon-wallace
 #""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
- 
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -133,6 +132,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
+
 #---------------------------------------------------------------------------------------
 # CUSTOM .BASHRC SETTINGS
 #---------------------------------------------------------------------------------------
@@ -143,9 +143,13 @@ function git_branch() {
     fi
 }
 
+function is_venv_enabled() {
+    [ -z "$VIRTUAL_ENV" ] || printf "%s" "VENV "
+}
+
 # Set the prompt.
 function bash_prompt(){
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]$(git_branch)\w \$ \[\033[00m\]'
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]$(git_branch)$(is_venv_enabled)\w \$ \[\033[00m\]'
 }
 
 PROMPT_COMMAND=bash_prompt
@@ -196,11 +200,8 @@ lt(){ ls --color=auto -A -F -l -h -t -r; }
 
 l.(){ ls --color=auto -A -F -d .* ; }
 
-# List directories.
-d(){ dir -lh | egrep '^d'; }
-
 # List all directories.
-function d.(){ dir -lha | egrep '^d'; }
+function d(){ dir -lhaF --color=always | egrep '^d'; }
 
 # Find the biggest files or folders in current directory.
 function biggest(){ du -sk * | column -t | sort -nr | head -20; }
@@ -275,10 +276,6 @@ dns_servers(){
 ENP0S25=$(ip addr show enp0s25 | awk '/inet /{print $2}')
 printf "%s\n" "ENP0S25: ${ENP0S25:=Not Connected}"
 
-# Print the wlp3s0 ip address.
-WLP3S0=$(ip addr show wlp3s0 | awk '/inet /{print $2}')
-printf "%s\n" "WLP3S0: ${WLP3S0:=Not Connected}"
-
 gateways
 dns_servers
 
@@ -288,3 +285,5 @@ function nvm-start() {
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 }
 
+# Create virtural enviroments in project folders.
+export PIPENV_VENV_IN_PROJECT=1
