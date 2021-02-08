@@ -137,7 +137,23 @@ fi
 # CUSTOM .BASHRC SETTINGS
 #---------------------------------------------------------------------------------------
 
-alias dd='dd status=progress '
+txtblu='\[\033[00;34m\]'
+txtpur='\[\033[00;35m\]'
+txtblu='\[\033[00;36m\]'
+txtwht='\[\033[00;37m\]'
+txtylw='\[\033[00;33m\]'
+txtgrn='\[\033[00;32m\]'
+txtred='\[\033[00;31m\]'
+txtblk='\[\033[00;30m\]'
+blu='\[\033[01;34m\]'
+pur='\[\033[01;35m\]'
+blu='\[\033[01;36m\]'
+wht='\[\033[01;37m\]'
+ylw='\[\033[01;33m\]'
+grn='\[\033[01;32m\]'
+red='\[\033[01;31m\]'
+blk='\[\033[01;30m\]'
+clr='\[\033[01;00m\]'
 
 function git_branch() {
     if [ -d .git ] ; then
@@ -151,10 +167,14 @@ function is_venv_enabled() {
 
 # Set the prompt.
 function bash_prompt(){
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]$(git_branch)$(is_venv_enabled)\w \$ \[\033[00m\]'
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]'${txtblu}'$(git_branch)'${ylw}'$(is_venv_enabled)'${txtgrn}'\W \$ \[\033[00m\]'
 }
 
-PROMPT_COMMAND=bash_prompt
+# Set the history time format.
+HISTTIMEFORMAT="%F %T "
+
+# View dd progress.
+alias dd='dd status=progress '
 
 # Set vi mode.
 set -o vi
@@ -162,17 +182,18 @@ set -o vi
 # Set the umask.
 umask 077
 
-# Set the history time format.
-HISTTIMEFORMAT="%Y%m%d  %H:%M:%S  "
-
 # Disable the caps lock key.
 setxkbmap -option ctrl:nocaps
 
 # Clear the screen.
-c(){ clear; }
+function c(){ 
+    clear; 
+}
 
 # Show the command line history.
-h(){ history; }
+function h(){ 
+    history; 
+}
 
 function gl(){ 
     git log --oneline; 
@@ -183,24 +204,43 @@ function gst(){
 }
 
 #
-mounted(){ /bin/mount | column -t; }
+function mounted(){ 
+    /bin/mount | column -t; 
+}
 
 # Go back directory level.
-..(){ cd ..; pwd; }
+function ..(){ 
+    builtin cd ..; pwd; 
+}
+
+# Go back directory level.
+function ...(){ 
+    builtin cd ../..; pwd; 
+}
 
 # List almost all files with classification.
-l(){ ls --color=auto -F; }
+function l(){ 
+    ls --color=auto -F; 
+}
 
 # List all files with classification.
-la(){ ls --color=auto -A -F; }
+function la(){ 
+    ls --color=auto -A -F; 
+}
 
 # Long list almost all files with classification and a humanly-readable size.
-ll(){ ls --color=auto -A -F -l -h; }
+function ll(){ 
+    ls --color=auto -A -F -l -h; 
+}
 
 # Long listing with the newest files last.
-lt(){ ls --color=auto -A -F -l -h -t -r; }
+function lt(){ 
+    ls --color=auto -A -F -l -h -t -r; 
+}
 
-l.(){ ls --color=auto -A -F -d .* ; }
+function l.(){ 
+    ls --color=auto -A -F -d .* ; 
+}
 
 # List all directories.
 function d(){ dir -lhaF --color=always | egrep '^d'; }
@@ -228,16 +268,10 @@ function pkgnum(){ dpkg --get-selections | wc -l; }
 
 # Create backup of a file.
 function bak(){ cp -v "$1"{,.bak}; }
- 
-# Display the LAN ip address.
-function address(){
-    local lan_ip=$(ip addr show enp0s25 | awk '/inet /{print $2}');
-    printf "%s\n" "enp0s25: $lan_ip";
-}
 
 startssh(){
     eval $(ssh-agent);
-    read -r -p "Path to key: " ssh_key;
+    read -r -p "Enter path to key: " ssh_key;
     ssh-add "$ssh_key";
 }
 
@@ -259,42 +293,16 @@ alias dec='cal -m 12'
 clear
 
 # Display system information in the terminal.
-printf "%s\n\n" "USERNAME: $USER"
-printf "%s\n\n" "HOSTNAME: $(hostname -f)"
-printf "%s\n\n" "DATE: $(date)"
-printf "%s\n\n" "KERNEL version: $(uname -rms)"
-printf "%s\n\n" "UPTIME: $(uptime -p)"
-printf "%s\n\n" "PACKAGES: $(dpkg --get-selections | wc -l)" 
+printf "\n"
+printf "   %s\n" "USERNAME: $USER"
+printf "   %s\n" "HOSTNAME: $(hostname -f)"
+printf "   %s\n" "DATE: $(date)"
+printf "   %s\n" "KERNEL version: $(uname -rms)"
+printf "   %s\n" "UPTIME: $(uptime -p)"
+printf "   %s\n" "PACKAGES: $(dpkg --get-selections | wc -l)" 
 # Print the resolution of the screens. printf displays all output on one line.
-printf "%s\n\n" "RESOLUTION: $(xrandr | awk '/\*/{printf $1" "}')"
-printf "%s\n\n" "$(free -h | awk '/Mem/{print "MEMORY Used: "$3" Total: "$2}')" 
-#printf "\n%s\n\n" "$(df -h -x tmpfs | egrep -v '^udev')"
-
-gateways(){
-    # Print the default gateway.
-    GATEWAY=$(ip route | awk '/default via/{print $3}')
-    printf "%s\n" "GATEWAY: ${GATEWAY:=None}"
-}
-
-dns_servers(){
-    # Print each DNS server in resolv.conf.
-    NS1=$(awk '/^nameserver/ {print $2}' /etc/resolv.conf | head -1)
-    NS2=$(awk '/^nameserver/ {print $2}' /etc/resolv.conf | tail -1)
-    # NS3=$(awk '/^nameserver/ {print $2}' /etc/resolv.conf | tail -1)
-    printf "%s\n" "NAMESERVER1: ${NS1:=Not set}"
-    if [ "$NS1" == "$NS2" ] ; then
-        printf "%s\n\n" "NAMESERVER2: Not set"
-    else
-        printf "%s\n\n" "NAMESERVER2: $NS2"
-    fi
-}
-
-# Print the enp0s25 ip address.
-ENP0S25=$(ip addr show enp0s25 | awk '/inet /{print $2}')
-printf "%s\n" "ENP0S25: ${ENP0S25:=Not Connected}"
-
-gateways
-dns_servers
+printf "   %s\n" "RESOLUTION: $(xrandr | awk '/\*/{printf $1" "}')"
+printf "   %s\n\n" "$(free -h | awk '/Mem/{print "MEMORY Used: "$3" Total: "$2}')" 
 
 function nvm-start() {
     export NVM_DIR="$HOME/.nvm"
