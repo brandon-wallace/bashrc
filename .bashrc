@@ -160,7 +160,7 @@ function is_venv_enabled() {
 
 # Set the prompt.
 function bash_prompt(){
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]'${txtblu}'$(git_branch)'${ylw}'$(is_venv_enabled)'${txtgrn}'\W \$ \[\033[00m\]'
+    PS1='${debian_chroot:+($debian_chroot)}'${blu}'$(git_branch)'${ylw}'$(is_venv_enabled)'${pur}'\W'${grn}' \$ '${clr}
 }
 
 # Set the history time format.
