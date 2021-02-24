@@ -275,6 +275,26 @@ startssh(){
     ssh-add "$ssh_key";
 }
 
+function get_temperature() {
+
+    local response=""
+
+    response=$(curl --silent 'https://api.openweathermap.org/data/2.5/weather?id=5110253&units=imperial&appid=<your_api_key>')
+
+    local status=$(echo $response | jq -r '.cod')
+
+    case $status in
+        200) printf "%s\n" "Temperature is: $(echo $response | jq '.main.temp')°F" 
+            ;;
+        401) echo "401 error"
+            ;;
+        *) echo "error"
+            ;;
+    esac
+
+}
+
+
 alias tree='tree -F --dirsfirst'
 
 alias jan='cal -m 01'
