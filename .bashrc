@@ -265,7 +265,7 @@ function bak(){ cp -v "$1"{,.bak}; }
 startssh(){
     eval $(ssh-agent);
     read -r -p "Enter path to key: " ssh_key;
-    ssh-add "$ssh_key";
+    ssh-add -i "$ssh_key";
 }
 
 function get_temperature() {
