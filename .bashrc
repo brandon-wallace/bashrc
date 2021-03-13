@@ -268,6 +268,19 @@ startssh(){
     ssh-add -i "$ssh_key";
 }
 
+function git_init() {
+    if [ -z "$1" ]; then
+        printf "%s\n" "Please provide a directory name.";
+    else
+        mkdir "$1";
+        builtin cd "$1";
+        pwd;
+        git init;
+        touch readme.md .gitignore LICENSE;
+        echo "# $(basename $PWD)" >> readme.md
+    fi
+}
+
 function get_temperature() {
 
     local response=""
