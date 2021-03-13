@@ -277,7 +277,11 @@ function get_temperature() {
     local status=$(echo $response | jq -r '.cod')
 
     case $status in
-        200) printf "%s\n" "Temperature is: $(echo $response | jq '.main.temp')°F" 
+        200) printf "Location: %s %s\n" "$(echo $response | jq '.name') $(echo $response | jq '.sys.country')"  
+             printf "Forecast: %s\n" "$(echo $response | jq '.weather[].description')" 
+             printf "Temperature: %.1f°F\n" "$(echo $response | jq '.main.temp')" 
+             printf "Temp Min: %.1f°F\n" "$(echo $response | jq '.main.temp_min')" 
+             printf "Temp Max: %.1f°F\n" "$(echo $response | jq '.main.temp_max')" 
             ;;
         401) echo "401 error"
             ;;
