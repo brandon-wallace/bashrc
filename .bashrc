@@ -324,16 +324,18 @@ clear
 
 # Display system information in the terminal.
 printf "\n"
-printf '\033[00;32m'"%s   IP ADDR:\033[00m \033[01;32m$(curl ifconfig.me 2> /dev/null)\033[00m\n" 
-printf '\033[00;32m'"%s   USERNAME:\033[00m \033[01;32m$(echo $USER)\033[00m\n"
-printf '\033[00;32m'"%s   HOSTNAME:\033[00m \033[01;32m$(hostname -f)\033[00m\n" 
-printf '\033[00;32m'"%s   DATE:\033[00m \033[01;32m$(date)\033[00m\n"
-printf '\033[00;32m'"%s   CPU:\033[00m \033[01;32m$(awk -F: '/model name/{print $2}' /proc/cpuinfo | head -1)\033[00m\n"
-printf '\033[00;32m'"%s   KERNEL: \033[01;32m$(uname -rms)\033[00m\n"
-printf '\033[00;32m'"%s   UPTIME: \033[01;32m$(uptime -p)\033[00m\n"
-printf '\033[00;32m'"%s   PACKAGES: \033[01;32m$(dpkg --get-selections | wc -l)\033[00m\n" 
-printf '\033[00;32m'"%s   RESOLUTION: \033[01;32m$(xrandr | awk '/\*/{printf $1" "}')\033[00m\n"
-printf '\033[00;32m'"%s   MEMORY: \033[01;32m$(free -m -h | awk '/Mem/{print $3"/"$2}')\033[00m\n" 
+printf '\033[00;32m'"%s   IP\t\t:\033[00m\033[01;32m$(curl ifconfig.me 2> /dev/null)\033[00m\n" 
+printf '\033[00;32m'"%s   USERNAME\t:\033[00m\033[01;32m$(echo $USER)\033[00m\n"
+printf '\033[00;32m'"%s   HOSTNAME\t:\033[00m\033[01;32m$(hostname -f)\033[00m\n" 
+printf '\033[00;32m'"%s   DATE\t\t:\033[00m\033[01;32m$(date -R)\033[00m\n"
+printf '\033[00;32m'"%s   CPU\t\t:\033[00m\033[01;32m$(echo $(awk -F: '/model name/{print $2}' /proc/cpuinfo | head -1))\033[00m\n"
+printf '\033[00;32m'"%s   KERNEL\t:\033[01;32m$(uname -rms)\033[00m\n"
+printf '\033[00;32m'"%s   UPTIME\t:\033[01;32m$(uptime -p)\033[00m\n"
+printf '\033[00;32m'"%s   PACKAGES\t:\033[01;32m$(dpkg --get-selections | wc -l)\033[00m\n" 
+printf '\033[00;32m'"%s   RESOLUTION\t:\033[01;32m$(xrandr | awk '/\*/{printf $1" "}')\033[00m\n"
+printf '\033[00;32m'"%s   MEMORY\t:\033[01;32m$(free -m -h | awk '/Mem/{print $3"/"$2}')\033[00m\n" 
+printf '\033[00;32m'"%s   IP ADDRESS\t:\033[01;32m$(ip addr show enp2s0 | awk '/inet /{print $2}')\033[00m\n" 
+printf '\033[00;32m'"%s   GATEWAY\t:\033[01;32m$(ip r | awk '/default/{print $3}')\033[00m\n" 
 printf "\n"
 
 
