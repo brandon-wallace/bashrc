@@ -148,7 +148,7 @@ red='\[\033[01;31m\]'
 blk='\[\033[01;30m\]'
 clr='\[\033[01;00m\]'
 
-# Run git branch if there is a .git directory presest.
+# Run git branch if there is a .git directory present.
 # Display current status of the git repository.
 function git_branch() {
     if [ -d .git ] ; then
