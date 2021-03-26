@@ -148,14 +148,17 @@ red='\[\033[01;31m\]'
 blk='\[\033[01;30m\]'
 clr='\[\033[01;00m\]'
 
+# Run git branch if there is a .git directory presest.
+# Display current status of the git repository.
 function git_branch() {
     if [ -d .git ] ; then
-        printf "%s" "($(git branch | awk '/\*/{print $2}'))";
+        GITSTATUS=$(git status | awk '
+        /^Changes not staged/{printf("+")} 
+        /^Untracked files/{printf("*")} 
+        /^Changes not staged/{printf("?")} 
+        /^Your branch is ahead of/{printf("^")}')
+        printf "%s" "($(git branch 2> /dev/null | awk '/\*/{print $2}'))${GITSTATUS}";
     fi
-}
-
-function is_venv_enabled() {
-    [ -z "$VIRTUAL_ENV" ] || printf "%s" "(venv)"
 }
 
 # Set the prompt.
