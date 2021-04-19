@@ -191,15 +191,37 @@ function h(){
     history; 
 }
 
-function gl(){ 
-    git log --oneline; 
+# See git status.
+function gs() {
+    git status;
 }
 
-function gst(){
-    git status; 
+# Run git diff to see changes in files.
+function gd() {
+    git diff;
 }
 
-#
+# Add files provided as arguments to Git.
+function ga() {
+    git add "$*";
+}
+
+# Add all changed files to Git.
+function gaa() {
+    git add --all;
+}
+
+# Create a new Git branch and change to that branch.
+function gb() {
+    git checkout -b "$1";
+}
+
+# Show Git logs one line per log.
+function gl() {
+    git log --oneline;
+}
+
+# Display mount output in columns.
 function mounted(){ 
     /bin/mount | column -t; 
 }
