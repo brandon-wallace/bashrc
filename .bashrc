@@ -260,6 +260,15 @@ function l.(){
     ls --color=auto -A -F -d .* ; 
 }
 
+function get_ip_address() {
+    for iface in /sys/class/net/*/operstate; do 
+        if [ "$(cat $iface)" == "up" ]; then
+            interface=$(echo $iface | awk -F'/' '{print $5}');
+            ip addr show $interface | awk '/inet /{printf $2}';
+        fi
+    done
+}
+
 # List all directories.
 function d(){ dir -lhaF --color=always | egrep '^d'; }
 
@@ -359,7 +368,7 @@ printf '\033[00;32m'"%s   UPTIME\t:\033[01;32m$(uptime -p)\033[00m\n"
 printf '\033[00;32m'"%s   PACKAGES\t:\033[01;32m$(dpkg --get-selections | wc -l)\033[00m\n" 
 printf '\033[00;32m'"%s   RESOLUTION\t:\033[01;32m$(xrandr | awk '/\*/{printf $1" "}')\033[00m\n"
 printf '\033[00;32m'"%s   MEMORY\t:\033[01;32m$(free -m -h | awk '/Mem/{print $3"/"$2}')\033[00m\n" 
-printf '\033[00;32m'"%s   IP ADDRESS\t:\033[01;32m$(ip addr show enp2s0 | awk '/inet /{print $2}')\033[00m\n" 
+printf '\033[00;32m'"%s   IP ADDRESS: \033[01;32m"; get_ip_address "\033[00m\n"; printf "\n"
 printf '\033[00;32m'"%s   DNS SERVERS\t:\033[01;32m$(awk '/nameserver/{print $2" "}' /etc/resolv.conf)\033[00m\n"
 printf '\033[00;32m'"%s   GATEWAY\t:\033[01;32m$(ip r | awk '/default/{print $3}')\033[00m\n" 
 printf "\n"
