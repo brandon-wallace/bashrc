@@ -181,6 +181,35 @@ umask 077
 # Disable the caps lock key.
 setxkbmap -option ctrl:nocaps
 
+# Extract files.
+function extract() {
+
+    if [ -f "$1" ]; then
+
+        case $1 in
+            *.tar.gz) tar xvzf $1
+                ;;
+            *.tar.bz2) tar xvjf $1
+                ;;
+            *.gz) gunzip $1
+                ;;
+            *.tar) tar xvf $1
+                ;;
+            *.zip) unzip $1
+                ;;
+            *) printf "%s\n" "$1 cannot be extracted via this command."
+                ;;
+        esac
+        
+    else
+
+        printf "%s\n" "Sorry, $1 is not a valid archive."
+
+    fi
+
+}
+
+
 # Clear the screen.
 function c(){ 
     clear; 
