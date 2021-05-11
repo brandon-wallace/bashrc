@@ -413,4 +413,7 @@ export NVM_DIR="$HOME/.nvm"
 # Create virtural enviroments in project folders.
 export PIPENV_VENV_IN_PROJECT=1
 
+# Rust cargo env configuration.
+. "$HOME/.cargo/env"
+
 ###############################################################################
