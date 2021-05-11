@@ -163,7 +163,7 @@ function git_branch() {
 
 # Set the prompt.
 function bash_prompt(){
-    PS1='${debian_chroot:+($debian_chroot)}'${blu}'$(git_branch)'${ylw}'$(is_venv_enabled)'${pur}'\W'${grn}' \$ '${clr}
+    PS1='${debian_chroot:+($debian_chroot)}'${blu}'$(git_branch)'${pur}'\W'${grn}' \$ '${clr}
 }
 
 # Set the history time format.
@@ -325,7 +325,7 @@ function pkgnum(){ dpkg --get-selections | wc -l; }
 # Create backup of a file.
 function bak(){ cp -v "$1"{,.bak}; }
 
-startssh(){
+function startssh(){
     eval $(ssh-agent);
     read -r -p "Enter path to key: " ssh_key;
     ssh-add -i "$ssh_key";
