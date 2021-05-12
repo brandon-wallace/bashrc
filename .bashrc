@@ -191,6 +191,8 @@ function extract() {
                 ;;
             *.tar.bz2) tar xvjf $1
                 ;;
+	    *.tar.xz) tar xf $1
+                ;;
             *.gz) gunzip $1
                 ;;
             *.tar) tar xvf $1
