@@ -211,7 +211,6 @@ function extract() {
 
 }
 
-
 # Clear the screen.
 function c(){ 
     clear; 
@@ -367,6 +366,11 @@ function get_temperature() {
             ;;
     esac
 
+}
+
+function empty_trash() {
+    printf "%s\n" "EMPTYING TRASH";
+    rm -rf $HOME/.local/share/Trash/files/*;
 }
 
 
