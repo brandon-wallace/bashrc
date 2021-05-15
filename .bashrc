@@ -333,6 +333,7 @@ function startssh(){
 }
 
 function git_init() {
+    git config --global init.defaultBranch main
     if [ -z "$1" ]; then
         printf "%s\n" "Please provide a directory name.";
     else
