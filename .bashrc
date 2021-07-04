@@ -199,6 +199,8 @@ function extract() {
                 ;;
             *.zip) unzip $1
                 ;;
+	    *.bz2) bzip2 -d $1
+                ;;
             *) printf "%s\n" "$1 cannot be extracted via this command."
                 ;;
         esac
