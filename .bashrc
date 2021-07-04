@@ -155,7 +155,7 @@ function git_branch() {
         GITSTATUS=$(git status | awk '
         /^Changes not staged/{printf("+")} 
         /^Untracked files/{printf("*")} 
-        /^Changes not staged/{printf("?")} 
+        /^Changes to be commited/{printf("?")} 
         /^Your branch is ahead of/{printf("^")}')
         printf "%s" "($(git branch 2> /dev/null | awk '/\*/{print $2}'))${GITSTATUS}";
     fi
