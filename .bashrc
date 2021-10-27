@@ -275,17 +275,17 @@ function l(){
 
 # List all files with classification.
 function la(){ 
-    ls --color=auto -A -F; 
+    ls --color=auto -A -F -h --time-style=+"%Y-%m-%d %H:%M:%S"; 
 }
 
 # Long list almost all files with classification and a humanly-readable size.
 function ll(){ 
-    ls --color=auto -A -F -l -h; 
+    ls --color=auto -A -F -l -h --time-style=+"%Y-%m-%d %H:%M:%S"; 
 }
 
 # Long listing with the newest files last.
 function lt(){ 
-    ls --color=auto -A -F -l -h -t -r; 
+    ls --color=auto -A -F -l -h -t -r --time-style=+"%Y-%m-%d %H:%M:%S"; 
 }
 
 function l.(){ 
@@ -302,7 +302,9 @@ function get_ip_address() {
 }
 
 # List all directories.
-function d(){ dir -lhaF --color=always | egrep '^d'; }
+function d(){ 
+    dir -lhaF --time-style=+"%Y-%m-%d %H:%M:%S" --color=always | egrep '^d'; 
+}
 
 # Find the biggest files or folders in current directory.
 function biggest(){ du -sk * | column -t | sort -nr | head -20; }
