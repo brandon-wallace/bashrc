@@ -409,7 +409,7 @@ printf '\033[00;32m'"%s   PACKAGES\t:\033[01;32m$(dpkg --get-selections | wc -l)
 printf '\033[00;32m'"%s   RESOLUTION\t:\033[01;32m$(xrandr | awk '/\*/{printf $1" "}')\033[00m\n"
 printf '\033[00;32m'"%s   MEMORY\t:\033[01;32m$(free -m -h | awk '/Mem/{print $3"/"$2}')\033[00m\n" 
 printf '\033[00;32m'"%s   IP ADDRESS: \033[01;32m"; get_ip_address "\033[00m\n"; printf "\n"
-printf '\033[00;32m'"%s   DNS SERVERS\t:\033[01;32m$(awk '/nameserver/{print $2" "}' /etc/resolv.conf)\033[00m\n"
+printf '\033[00;32m'"%s   DNS SERVERS\t:\033[01;32m$(awk '/^nameserver/{print $2" "}' /etc/resolv.conf)\033[00m\n"
 printf '\033[00;32m'"%s   GATEWAY\t:\033[01;32m$(ip r | awk '/default/{print $3}')\033[00m\n" 
 printf "\n"
 
