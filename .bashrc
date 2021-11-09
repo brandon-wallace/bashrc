@@ -296,9 +296,10 @@ function get_ip_address() {
     for iface in /sys/class/net/*/operstate; do 
         if [ "$(cat $iface)" == "up" ]; then
             interface=$(echo $iface | awk -F'/' '{print $5}');
-            ip addr show $interface | awk '/inet /{printf $2}';
+            ip_address=$(ip addr show $interface | awk '/inet /{printf $2}');
         fi
     done
+    printf "%s" "${ip_address:=Not Connected}"
 }
 
 # List all directories.
