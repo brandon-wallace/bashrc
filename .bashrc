@@ -181,6 +181,22 @@ umask 077
 # Disable the caps lock key.
 setxkbmap -option ctrl:nocaps
 
+function updateos() {
+    sudo apt update;
+    clear;
+    sudo apt list --upgradable;
+    read -r -p "Update OS? Type Yes or No. " answer;
+    case $answer in
+        [yY]*) sudo apt upgrade;
+        ;;
+        [nN]*) exit 1;
+        ;;
+        *) echo "Please type Yes or No.";
+        exit 1;
+        ;;
+    esac;
+}
+
 # Extract files.
 function extract() {
 
