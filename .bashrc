@@ -264,9 +264,14 @@ function gb() {
     git checkout -b "$1";
 }
 
-# Show Git logs one line per log.
+# Show Git logs one line per log in color with formatting.
 function gl() {
-    git log --oneline;
+    git log --graph --abbrev-commit --decorate --all --format=format:'%C(bold blue)%h%C(reset) %C(bold green)%ar%C(reset) %C(white)%s%C(reset) %C(magenta) %an%C(reset)%C(bold yellow)%d%C(reset)';
+}
+
+# Show Git logs enhanced in color with formatting and detail.
+function gll() {
+    git log --graph --abbrev-commit --decorate;
 }
 
 # Display mount output in columns.
