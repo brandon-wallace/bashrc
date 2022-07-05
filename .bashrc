@@ -148,6 +148,18 @@ red='\[\033[01;31m\]'
 blk='\[\033[01;30m\]'
 clr='\[\033[01;00m\]'
 
+# Display the prompt on two lines. 
+# Show full path and git branch on top.
+# Below show double arrow instead of dollar sign.
+# Change color of arrow from green to red if command fails.
+PROMPT_COMMAND='if [ $? -eq 0 ]; then 
+PS1="${debian_chroot:+($debian_chroot)}\[\033[01;34m\] \w\[\033[49;90m\] $(git_branch) 
+\[\033[01;32m\] » \[\033[00m\]"
+else 
+PS1="${debian_chroot:+($debian_chroot)}\[\033[01;34m\] \w\[\033[49;90m\] $(git_branch) 
+\[\033[01;31m\] » \[\033[00m\]"
+fi'
+
 # Run git branch if there is a .git directory present.
 # Display current status of the git repository.
 function git_branch() {
