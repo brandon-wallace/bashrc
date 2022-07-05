@@ -169,7 +169,7 @@ function git_branch() {
         /^Untracked files/{printf("*")} 
         /^Changes to be commited/{printf("?")} 
         /^Your branch is ahead of/{printf("^")}')
-        printf "%s" "($(git branch 2> /dev/null | awk '/\*/{print $2}'))${GITSTATUS}";
+        printf "%s" "$(__git_ps1 "(%s)")${GITSTATUS}";
     fi
 }
 
