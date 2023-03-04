@@ -126,9 +126,27 @@ if ! shopt -oq posix; then
 fi
 
 
-#---------------------------------------------------------------------------------------
+########################################################################################
 # CUSTOM .BASHRC SETTINGS
-#---------------------------------------------------------------------------------------
+
+
+# Set vi mode.
+set -o vi
+
+# Set history size.
+HISTSIZE=10000
+HISTFILESIZE=10000
+
+# Set the history time format.
+HISTTIMEFORMAT="%F %T "
+
+# View dd progress.
+alias dd='dd status=progress '
+
+alias tree='tree --dirsfirst -F'
+
+# Set the umask.
+umask 077
 
 txtblu='\[\033[00;34m\]'
 txtpur='\[\033[00;35m\]'
@@ -177,21 +195,6 @@ function git_branch() {
 function bash_prompt(){
     PS1='${debian_chroot:+($debian_chroot)}'${blu}'$(git_branch)'${pur}'\W'${grn}' \$ '${clr}
 }
-
-# Set the history time format.
-HISTTIMEFORMAT="%F %T "
-
-# View dd progress.
-alias dd='dd status=progress '
-
-# Set vi mode.
-set -o vi
-
-# Set the umask.
-umask 077
-
-# Disable the caps lock key.
-setxkbmap -option ctrl:nocaps
 
 function updateos() {
     sudo apt update;
@@ -249,6 +252,11 @@ function c(){
 # Show the command line history.
 function h(){ 
     history; 
+}
+
+# Grep through history.
+function hg(){ 
+    history | grep $1; 
 }
 
 # See git status.
@@ -326,13 +334,12 @@ function l.(){
 }
 
 function get_ip_address() {
-    for iface in /sys/class/net/*/operstate; do 
-        if [ "$(cat $iface)" == "up" ]; then
-            interface=$(echo $iface | awk -F'/' '{print $5}');
-            ip_address=$(ip addr show $interface | awk '/inet /{printf $2}');
+    mapfile -t iface_arr < <(echo $(ls /sys/class/net/))
+    for iface in $iface_arr; do 
+        if [ "$(cat /sys/class/net/$iface/operstate)" == "up" ]; then
+            printf "    %s\n" "${iface^^}: $(ip addr show $iface | awk '/inet /{printf $2}')"; 
         fi
     done
-    printf "%s" "${ip_address:=Not Connected}"
 }
 
 # List all directories.
@@ -351,9 +358,6 @@ function psg(){ prog=$1; ps -ef | grep "$prog"; }
   
 # Show active ports.
 function ports(){ netstat -tulpna; }
-  
-# Grep through history.
-function hg(){ history | grep $1; }
 
 # Show applications connected to the network.
 function listening(){ lsof -P -i -n; }
@@ -388,7 +392,7 @@ function get_temperature() {
 
     local response=""
 
-    response=$(curl --silent 'https://api.openweathermap.org/data/2.5/weather?id=5110253&units=imperial&appid=<your_api_key>')
+    response=$(curl --silent 'https://api.openweathermap.org/data/2.5/weather?id=5110253&units=imperial&appid=<YOUR_API_KEY>')
 
     local status=$(echo $response | jq -r '.cod')
 
@@ -406,12 +410,6 @@ function get_temperature() {
     esac
 
 }
-
-function empty_trash() {
-    printf "%s\n" "EMPTYING TRASH";
-    rm -rf $HOME/.local/share/Trash/files/*;
-}
-
 
 alias tree='tree -F --dirsfirst'
 
@@ -432,10 +430,11 @@ clear
 
 # Display system information in the terminal.
 printf "\n"
-printf '\033[00;32m'"%s   IP\t\t:\033[00m\033[01;32m$(curl ifconfig.me 2> /dev/null)\033[00m\n" 
+#printf '\033[00;32m'"%s   IP\t\t:\033[00m\033[01;32m$(curl ifconfig.me 2> /dev/null)\033[00m\n" 
 printf '\033[00;32m'"%s   USERNAME\t:\033[00m\033[01;32m$(echo $USER)\033[00m\n"
 printf '\033[00;32m'"%s   HOSTNAME\t:\033[00m\033[01;32m$(hostname -f)\033[00m\n" 
 printf '\033[00;32m'"%s   DATE\t\t:\033[00m\033[01;32m$(date -R)\033[00m\n"
+printf '\033[00;32m'"%s   OS\t\t:\033[00m\033[01;32m$(awk -F= '/^PRETTY_NAME/{gsub("\"",""); print $2}' /etc/os-release)\033[00m\n"
 printf '\033[00;32m'"%s   CPU\t\t:\033[00m\033[01;32m$(echo $(awk -F: '/model name/{print $2}' /proc/cpuinfo | head -1))\033[00m\n"
 printf '\033[00;32m'"%s   KERNEL\t:\033[01;32m$(uname -rms)\033[00m\n"
 printf '\033[00;32m'"%s   UPTIME\t:\033[01;32m$(uptime -p)\033[00m\n"
@@ -443,8 +442,8 @@ printf '\033[00;32m'"%s   PACKAGES\t:\033[01;32m$(dpkg --get-selections | wc -l)
 printf '\033[00;32m'"%s   RESOLUTION\t:\033[01;32m$(xrandr | awk '/\*/{printf $1" "}')\033[00m\n"
 printf '\033[00;32m'"%s   MEMORY\t:\033[01;32m$(free -m -h | awk '/Mem/{print $3"/"$2}')\033[00m\n" 
 printf '\033[00;32m'"%s   IP ADDRESS: \033[01;32m"; get_ip_address "\033[00m\n"; printf "\n"
-printf '\033[00;32m'"%s   DNS SERVERS\t:\033[01;32m$(awk '/^nameserver/{print $2" "}' /etc/resolv.conf)\033[00m\n"
 printf '\033[00;32m'"%s   GATEWAY\t:\033[01;32m$(ip r | awk '/default/{print $3}')\033[00m\n" 
+printf '\033[00;32m'"%s   DNS SERVERS\t:\033[01;32m$(systemd-resolve --status | awk -F: '/DNS Servers/{printf $2}')\033[00m\n"
 printf "\n"
 
 
