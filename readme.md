@@ -2,7 +2,7 @@
 
 Requirements:
 
-* bsdmainutils (for the cal command)
+* bsdmainutils or ncal (for the cal command)
 * curl
 * git
 * unzip
