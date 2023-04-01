@@ -145,6 +145,19 @@ alias dd='dd status=progress '
 
 alias tree='tree --dirsfirst -F'
 
+alias jan='cal -m 01 || cal January'
+alias feb='cal -m 02 || cal Feburary'
+alias mar='cal -m 03 || cal March'
+alias apr='cal -m 04 || cal April'
+alias may='cal -m 05 || cal May'
+alias jun='cal -m 06 || cal June'
+alias jul='cal -m 07 || cal July'
+alias aug='cal -m 08 || cal August'
+alias sep='cal -m 09 || cal September'
+alias oct='cal -m 10 || cal October'
+alias nov='cal -m 11 || cal November'
+alias dec='cal -m 12 || cal December'
+
 # Set the umask.
 umask 077
 
@@ -333,15 +346,6 @@ function l.(){
     ls --color=auto -A -F -d .* ; 
 }
 
-function get_ip_address() {
-    mapfile -t iface_arr < <(echo $(ls /sys/class/net/))
-    for iface in $iface_arr; do 
-        if [ "$(cat /sys/class/net/$iface/operstate)" == "up" ]; then
-            printf "    %s\n" "${iface^^}: $(ip addr show $iface | awk '/inet /{printf $2}')"; 
-        fi
-    done
-}
-
 # List all directories.
 function d(){ 
     dir -lhaF --time-style=+"%Y-%m-%d %H:%M:%S" --color=always | egrep '^d'; 
@@ -389,42 +393,34 @@ function git_init() {
 }
 
 function get_temperature() {
-
     local response=""
 
-    response=$(curl --silent 'https://api.openweathermap.org/data/2.5/weather?id=5110253&units=imperial&appid=<YOUR_API_KEY>')
+    local response=$(curl --silent 'https://api.openweathermap.org/data/2.5/weather?id=5110253&units=imperial&appid=<YOUR_API_KEY>')
 
     local status=$(echo $response | jq -r '.cod')
 
     case $status in
-        200) printf "Location: %s %s\n" "$(echo $response | jq '.name') $(echo $response | jq '.sys.country')"  
-             printf "Forecast: %s\n" "$(echo $response | jq '.weather[].description')" 
-             printf "Temperature: %.1f°F\n" "$(echo $response | jq '.main.temp')" 
-             printf "Temp Min: %.1f°F\n" "$(echo $response | jq '.main.temp_min')" 
-             printf "Temp Max: %.1f°F\n" "$(echo $response | jq '.main.temp_max')" 
+        200) printf "Current: %.1f°F\n" "$(echo $response | jq '.main.temp')" 
+	     printf "Location: %s %s\n" "$(echo $response | jq '.name' | tr -d '"') $(echo $response | jq '.sys.country' | tr -d '"')"  
+             printf "Forecast: %s\n" "$(echo $response | jq '.weather[].description' | tr -d '"')" 
+             printf "Min Temp: %.1f°F\n" "$(echo $response | jq '.main.temp_min')" 
+             printf "Max Temp: %.1f°F\n" "$(echo $response | jq '.main.temp_max')" 
             ;;
         401) echo "401 error"
             ;;
         *) echo "error"
             ;;
     esac
-
 }
 
-alias tree='tree -F --dirsfirst'
-
-alias jan='cal -m 01'
-alias feb='cal -m 02'
-alias mar='cal -m 03'
-alias apr='cal -m 04'
-alias may='cal -m 05'
-alias jun='cal -m 06'
-alias jul='cal -m 07'
-alias aug='cal -m 08'
-alias sep='cal -m 09'
-alias oct='cal -m 10'
-alias nov='cal -m 11'
-alias dec='cal -m 12'
+function get_ip_address() {
+    mapfile -t iface_arr < <(echo $(ls /sys/class/net/))
+    for iface in $iface_arr; do 
+        if [ "$(cat /sys/class/net/$iface/operstate)" == "up" ]; then
+            printf "    %s\n" "${iface^^}: $(ip addr show $iface | awk '/inet /{printf $2}')"; 
+        fi
+    done
+}
 
 clear
 
