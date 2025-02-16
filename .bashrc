@@ -428,11 +428,10 @@ function git_init() {
     fi
 }
 
+# Get the weather report from the Openweathermap API.
 function get_temperature() {
     local response=""
-
     local response=$(curl --silent 'https://api.openweathermap.org/data/2.5/weather?id=5110253&units=imperial&appid=<YOUR_API_KEY>')
-
     local status=$(echo $response | jq -r '.cod')
 
     case $status in
@@ -447,6 +446,28 @@ function get_temperature() {
         *) echo "error"
             ;;
     esac
+}
+
+# Get the 5 day forecast from the Openweathermap API.
+function forecast() {
+    json_data=$(curl --silent 'https://api.openweathermap.org/data/2.5/forecast?units=imperial&id=<YOUR_CITY_ID>&appid=<YOUR_API_KEY>')
+
+    if echo "$json_data" | jq -e '.cod != "200"' > /dev/null; then
+	echo "failure to fetch data from API."
+    fi
+
+    echo "$json_data" | jq -r '.list[] | "\(.dt_txt) \(.main.temp) \(.main.humidity) \(.weather[0].description)"' | \
+    while read -r line; do
+        if [ $(echo $line | awk '{print $2}') == "12:00:00" ]; then
+            printf "%s\n" "------------------------------"
+            date_format="%a, %b %d, %Y at %H:%M:%S" 
+            datetime=$(echo $line | awk '{print $1" "$2}')
+            printf "%s\n" "$(date -d "$datetime" +"$date_format")" 
+            printf "%s\n" "Forecast: $(echo $line | cut -d' ' -f 5-)"
+            printf "%s\n" "Temparature: $(echo $line | awk '{print $3}')°F"
+            printf "%s\n" "Humidity: $(echo $line | awk '{print $4}')%%"
+        fi
+    done
 }
 
 function get_ip_address() {
